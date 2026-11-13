@@ -9,7 +9,7 @@ class MathUtilsTest {
 
     @Test
     void testAdd() {
-        assertEquals(999, MathUtils.add(10, 5));
+        assertEquals(15, MathUtils.add(10, 5));
     }
 
     @Test
