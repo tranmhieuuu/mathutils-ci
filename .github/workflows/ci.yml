@@ -1,0 +1,46 @@
+name: Java Maven CI - MathUtils
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v7
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: maven
+
+      - name: Test with Maven
+        run: mvn --batch-mode --no-transfer-progress clean test
+
+      - name: Package JAR with Maven
+        run: mvn --batch-mode --no-transfer-progress package
+
+      - name: Verify JAR exists and contains Java classes
+        shell: bash
+        run: |
+          JAR_FILE="target/mathutils-ci-1.0-SNAPSHOT.jar"
+          test -s "$JAR_FILE"
+          jar tf "$JAR_FILE" | grep -q '^com/practice/math/MathUtils.class$'
+          jar tf "$JAR_FILE" | grep -q '^com/practice/math/Main.class$'
+          echo "Verified nonempty JAR: $JAR_FILE"
+
+      - name: Upload JAR artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: mathutils-ci-jar
+          path: target/mathutils-ci-1.0-SNAPSHOT.jar
+          if-no-files-found: error
+          retention-days: 14

@@ -1,0 +1,7 @@
+# IDE, build output
+.idea/
+*.iml
+target/
+build/
+*.log
+# Khong ignore lib/ vi file nop cho giao vien can dependency .jar
